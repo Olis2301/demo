@@ -16,7 +16,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    bat 'docker build -t $DOCKER_IMAGE .'
+                    sh 'docker build -t $DOCKER_IMAGE .'
                 }
             }
         }
@@ -24,8 +24,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    bat "echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin"
-                    bat 'docker push $DOCKER_IMAGE'
+                    sh "echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin"
+                    sh 'docker push $DOCKER_IMAGE'
                 }
             }
         }
@@ -33,7 +33,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    bat 'helm upgrade --install demo-app ./demo-app --set image.repository=olisdecoy/demo --set image.tag=latest'
+                    sh 'helm upgrade --install demo-app ./demo-app --set image.repository=olisdecoy/demo --set image.tag=latest'
                 }
             }
         }
