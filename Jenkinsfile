@@ -3,13 +3,13 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub-creds')
-        DOCKER_IMAGE = "wienazka/flask-app:latest"
+        DOCKER_IMAGE = "olisdecoy/demo:latest"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/wienazka/flask-app.git'
+                git branch: 'main', url: 'https://github.com/Olis2301/demo.git'
             }
         }
 
@@ -33,7 +33,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    sh 'helm upgrade --install demo-app ./demo-app --set image.repository=wienazka/flask-app --set image.tag=latest'
+                    sh 'helm upgrade --install demo-app ./demo-app --set image.repository=olisdecoy/demo --set image.tag=latest'
                 }
             }
         }
