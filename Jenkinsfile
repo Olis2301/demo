@@ -1,27 +1,27 @@
 pipeline {
     agent any
-
     environment {
-        KUBECONFIG = credentials('kubeconfig-demo') // ambil dari Jenkins credentials
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
     }
-
     stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/Olis2301/demo.git', branch: 'main'
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t olisdecoy/demo:latest .'
             }
         }
-        stage('Push Docker Image') {
+        stage('Docker Login') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                    sh 'docker push olisdecoy/demo:latest'
-                }
+                sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
             }
         }
-        stage('Deploy to Kubernetes') {
+        stage('Push Docker Image') {
             steps {
-                sh 'helm upgrade --install demo-app ./demo-app --set image.repository=olisdecoy/demo --set image.tag=latest'
+                sh 'docker push olisdecoy/demo:latest'
             }
         }
     }
