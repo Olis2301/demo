@@ -1,0 +1,19 @@
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: <isi_base64_cert_CA_cluster>
+    server: https://<alamat-ip-atau-domain-cluster-kubernetes>:6443
+  name: my-cluster
+contexts:
+- context:
+    cluster: my-cluster
+    user: my-user
+  name: my-context
+current-context: my-context
+kind: Config
+preferences: {}
+users:
+- name: my-user
+  user:
+    client-certificate-data: <isi_base64_client_certificate>
+    client-key-data: <isi_base64_client_key>
